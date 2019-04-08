@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <script src="./node_modules/babel-standalone/babel.js"></script>
+    <script>
+        const es6 = `
+            let {name,age} = {
+                name:'cef',
+                age:'3'
+            }
+        `
+        console.log(es6);
+        //转好的对象在code里
+        const es5 = Babel.transform(es6,{presets:['es2015']}).code;
+        console.log(es5);
+    </script>
+    <script type="text/babel">
+        //设置type = "text/babel" 会自动转换
+        let fn = ()=>{
+            console.log(12);
+        }
+        fn();
+        //开发环境
+            /*
+                在你的电脑写项目
+                会用到第三方js库
+                开发工具 浏览器 node npm
+            */
+        //生产环境
+            /*
+                把打包好的项目部署到服务器
+            */
+    </script>
+</body>
+</html>

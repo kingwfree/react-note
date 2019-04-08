@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>基本语法</title>
+    <style>
+        .red{
+            color:red;
+        }
+    </style>
+</head>
+<body>
+    <div id="app"></div>
+    <div class="test"></div>
+    <div class="test"></div>
+    <div class="test1"></div>
+    <div class="test1"></div>
+    <div class="test1"></div>
+    <div class="test1"></div>
+    <div class="test1"></div>
+    <script src="./node_modules/react/umd/react.development.js"></script>
+    <script src="./node_modules/babel-standalone/babel.js"></script>
+    <script src="./node_modules/react-dom/umd/react-dom.development.js"></script>
+    
+    <script type="text/babel">
+    //js里写html代码 jsx语法
+        //写react语法 需要babel解析
+        //react 只关注ui层
+        //react-dom 只处理dom 用户交互
+        //console.log(ReactDOM)
+        //render: ƒ (element, container, callback)
+        ReactDOM.render(
+            <h1>Hello World</h1>,//只能有一个父容器，其他容器必须被包裹
+            document.querySelector('#app')
+        )
+        ReactDOM.render(
+            <h1>Hello World12</h1>,//只能有一个父容器，其他容器必须被包裹
+            document.querySelector('#app')
+        )
+        //当要render的容器是同一个时，其他的会被覆盖，只会显示最后一个
+        const ele = <div>
+            这是父节点
+            <p>
+                这是子节点
+            </p>    
+        </div>;
+        ReactDOM.render(
+            ele,
+            document.querySelector('#app')
+        )
+        //注释
+        const ele1 = <div>
+            这是父节点
+            <p>
+                这是子节点
+            </p>   
+            <div>
+                //js注释
+                {
+                    //插值符号
+                    
+                    '这是插值内容'
+                    //这里可以写js注释
+                    /*
+                        这是多行注释
+                    */
+                    //这是单行注释
+                    
+                }    
+            </div> 
+        </div>;
+        
+        // ReactDOM.render(
+        //     ele1,
+        //     document.querySelector('.test')
+        // )
+        //console.log(document.querySelector('.test'))
+        //当使用document.querySelector获取元素class时只获取第一个
+        ReactDOM.render(
+            ele1,
+            document.getElementsByClassName('test')[1]
+        )
+        //根据数据生成结构
+        //return 后面的代码要写在（）里，作为一个整体
+        //函数里写js代码
+        //class是一个关键词
+        function createJSX() {
+            return (
+                <div className="red">
+                    函数里返回标签
+                    //js注释
+                    {
+                        //插值符号
+                        
+                        '这是插值内容'
+                        //这里可以写js注释
+                        /*
+                            这是多行注释
+                        */
+                        //这是单行注释
+                        
+                    } 
+                </div>
+            )
+        }
+        const ele2 = createJSX();
+        ReactDOM.render(
+            ele2,
+            document.getElementsByClassName('test')[1]
+        )
+    </script>
+    <script type="text/babel">
+        //插值符号
+        const person = {
+            name:'zf',
+            sex:1
+        };
+        const ele = (
+            <div>
+                <h1>Hello</h1>
+                {
+                    //插值符号里写js代码
+                }
+                <p>my name is {person.name}</p>    
+            </div>
+        );
+        ReactDOM.render(
+            ele,
+            document.getElementsByClassName('test1')[0]
+        );
+        //arr 通过axios fetch请求后端
+        const arr = ['傻子飞','哈士奇','黑煞','老狗'];
+        const ele1 = (
+            <ul>
+                {
+                    //在jsx里用插值符号插入数据
+                    arr.length > 0 && arr.map((item,index)=>{
+                        return (
+                            <li key={index}>
+                                {item}
+                            </li>
+                        )
+                    })
+                }    
+            </ul>
+        );
+        ReactDOM.render(
+            ele1,
+            document.getElementsByClassName('test1')[0]
+        );
+        //在插值符号里使用三目表达式进行判断  不能使用if只能写表达式
+        const ele2 = (
+            <p>
+                性别：
+                {
+                    person.sex ? '男':'女'
+                }
+            </p>
+        )
+        ReactDOM.render(
+            ele2,
+            document.getElementsByClassName('test1')[1]
+        );
+        //在插值符号里写自执行函数
+        const ele3 = (
+            <div>
+                {
+                    (function () {
+                        if(person.sex)return <p>男</p>
+
+                        return <p>女</p>
+                    })()
+                }    
+            </div>
+        );
+        ReactDOM.render(
+            ele3,
+            document.getElementsByClassName('test1')[2]
+        );
+        //调用函数
+        function getSex() {
+            if(person.sex)return <p>男</p>
+
+            return <p>女</p>
+        }
+        ReactDOM.render(
+            <div>
+                {
+                    getSex()
+                }
+            </div>,
+            document.getElementsByClassName('test1')[4]
+        )
+        //插值符号会把数组直接展开
+        const ele4 = (
+            <div>
+                {
+                    //数组能自动展开
+                    //arr
+                    //对象不能自动展开
+                    //person
+
+                    //Object.keys(person)
+                }
+            </div>
+        );
+        ReactDOM.render(
+            ele4,
+            document.getElementsByClassName('test1')[3]
+        )
+    </script>
+</body>
+</html>
