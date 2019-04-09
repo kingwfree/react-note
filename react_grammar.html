@@ -20,6 +20,14 @@
     <div class="test1"></div>
     <div class="test1"></div>
     <div class="test1"></div>
+
+    <div class="test2"></div>
+    <div class="test2"></div>
+
+    <div class="test3"></div>
+    <div class="test3"></div>
+    <div class="test3"></div>
+    
     <script src="./node_modules/react/umd/react.development.js"></script>
     <script src="./node_modules/babel-standalone/babel.js"></script>
     <script src="./node_modules/react-dom/umd/react-dom.development.js"></script>
@@ -113,6 +121,7 @@
     </script>
     <script type="text/babel">
         //插值符号
+        //{} ->数字 布尔 字符串 表达式 即时函数 数组
         const person = {
             name:'zf',
             sex:1
@@ -138,7 +147,8 @@
                     //在jsx里用插值符号插入数据
                     arr.length > 0 && arr.map((item,index)=>{
                         return (
-                            <li key={index}>
+                            <li 
+                                key={index}>
                                 {item}
                             </li>
                         )
@@ -209,7 +219,220 @@
         ReactDOM.render(
             ele4,
             document.getElementsByClassName('test1')[3]
+        );
+        //样式
+        const styles = {
+            title:{
+                background:'blue',
+                color:'yellow'
+            },
+            content:{
+                fontSize:'50px',
+                color:'skyblue'
+            }
+        };
+        const ele5 = (
+            <div style={styles.title}>
+                样式
+                <div style={{color:'red'}}>
+                    hasky
+                </div>
+            </div>
+        );
+        ReactDOM.render(
+            ele5,
+            document.getElementsByClassName('test2')[0]
+        );
+    </script>
+    <!-- 事件绑定 -->
+    <script type="text/babel">
+        //事件绑定
+        //call 立马执行 
+        //bind 不会立马执行 预传参 参数在函数执行时才传递
+        //函数最后一个参数是事件对象event
+        function handleClick(data,event) {
+            alert('事件调用函数')
+            console.log(data,event.target)
+        }
+        function handleKeyDown(e) { 
+            console.log('keydown',e)
+        }
+        
+        const ele = (
+            <div>
+                <p>事件处理</p>
+                <input 
+                    type="button" 
+                    value='自执行' 
+                    onClick={alert('自执行,只执行一次')} 
+                />
+                <br />
+                <input 
+                    type="button" 
+                    value='箭头函数' 
+                    onClick={()=>{alert('箭头函数')}} 
+                />
+                <br />
+                <input 
+                    type="button" 
+                    value='事件调用函数' 
+                    onClick={ handleClick.bind(this,'这才是参数') } 
+                />
+                <br />
+                <input 
+                    type="text" 
+                    defaultValue='keydown' 
+                    onKeyDown={ handleKeyDown } 
+                />
+            </div>
+        );
+        ReactDOM.render(
+            ele,
+            document.getElementsByClassName('test2')[1]
+        );
+        
+    </script>
+    <!-- 组件 -->
+    <script type="text/babel">
+        //区分是否是组件  看是否有状态
+        //什么是状态
+        //让数据驱动视图的响应式数据
+        //状态 = 数据
+        //state 用于数据管理
+        //但是一个项目有太多的页面，而页面与页面间需要数据互联
+        //这时需要一个js库帮我们去管理，方便在每一个页面 都是拿到最新的数据
+        //redux js库 能帮我们管理大量的数据
+        //想要在每个页面都能很方便的去调取redux里面的数据，使用react-redux模块（js库）
+        
+        //这是无状态的
+        //2秒过去后，它并不会更新组件 ，这不是一个响应式数据
+        let str = 'dream';
+        const ele = (
+            <div>
+                {str}
+            </div>
         )
+        ReactDOM.render(
+            ele,
+            document.getElementsByClassName('test3')[0]
+        )
+
+        setTimeout(() => {
+            str = "zfq"
+        }, 2000);
+
+        //声明一个函数组件
+        //无状态的
+        function Head(){
+            return (
+                <header>这是页面头部</header>
+            )
+        }
+        function Main() {
+            return (
+                <main>这是页面主体内容</main>
+            )
+        }
+        function Foot() {
+            return (
+                <footer>这是页面底部</footer>
+            )
+        }
+        const ele1 = (
+            <div>
+                <Head></Head>
+                <Main></Main>
+                <Foot />
+            </div>
+        )
+        ReactDOM.render(
+            ele1,
+            document.getElementsByClassName('test3')[1]
+        )
+        //有状态组件
+        //定义Head组件 继承自React的 component组件
+        //那么就可以去调用React的component组件所提供的方法和属性
+        /*
+            state  状态  负责页面的视图的数据
+            props  属性  传递属性
+        */
+        class Div extends React.Component{
+            constructor(props){
+                super(...arguments);
+                this.name = 'dream'
+                this.age = 18
+                console.log(props);
+                this.state = {
+                    abc:this.props.text
+                }
+                this.handleClick = this.handleClick.bind(this)
+                setTimeout(()=>{
+                    this.setState({
+                        abc:'123'
+                    })
+                },2000)
+            }
+            //不要写function
+            say(){
+                console.log('方法')
+            }
+            //在这里定义对象也会被挂载到实例对象上 在原本的es6语法里是不行的
+            xyz = {}
+            handleClick(){
+                //console.log(this); //没bind undefined
+                //this.state.abc = '点击改变'
+                this.setState({
+                    abc:'点击改变'
+                })
+            }
+            handleClick1(){
+                console.log(this)
+            }
+            handleClick3 = ()=>{
+                console.log(this)
+            }
+            handleClick2(e){
+                console.log(this,e)
+            }
+            render(){
+                return (
+                    
+                    <div
+                        onClick={this.handleClick}
+                    >
+                        {
+                        /*
+                        
+                            第一种方式不适合传参
+                            第二种方式适合传参
+                            第四种方法也可以传参
+                            
+                            
+                        */
+                        }
+                        { this.state.abc && this.state.abc }
+                        <input type="button" onClick={this.handleClick1.bind(this)}/>
+                        <input type="button" onClick={this.handleClick3}/>
+                        <input type="button" onClick={(e)=>{this.handleClick2(e)}}/>
+                    </div>
+                )
+            }
+        }
+
+        ReactDOM.render(
+            <Div 
+                title="首页"
+                text="这是有状态组件!"
+            />,
+            document.getElementsByClassName('test3')[2]
+        )
+        
+    </script>
+    <!-- import -->
+    <script type="module">
+        import ab,{getData,title,arr,obj} from './es6.js'
+
+        console.log(ab,getData,title,arr,obj)
     </script>
 </body>
 </html>
