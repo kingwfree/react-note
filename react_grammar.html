@@ -20,19 +20,41 @@
     <div class="test1"></div>
     <div class="test1"></div>
     <div class="test1"></div>
-
+    <hr>
     <div class="test2"></div>
     <div class="test2"></div>
+    <hr>
+    <div class="test3"></div>
+    <div class="test3"></div>
+    <div class="test3"></div>
+    <hr>
+    <div class="test4"></div>
+    <hr>
+    <div class="test5"></div>
+    <div class="test5"></div>
+    <hr>
+    <div class="test6"></div>
+    <hr>
+    <div class="test7"></div>
+    <hr>
+    <div class="test8"></div>
 
-    <div class="test3"></div>
-    <div class="test3"></div>
-    <div class="test3"></div>
-    
+
+
     <script src="./node_modules/react/umd/react.development.js"></script>
     <script src="./node_modules/babel-standalone/babel.js"></script>
     <script src="./node_modules/react-dom/umd/react-dom.development.js"></script>
     
     <script type="text/babel">
+    /*
+        class -> className
+        style -> style={object}
+        value -> defaultValue
+        单标签要闭合
+        for -> htmlFor
+        focus -> autoFocus
+    */
+
     //js里写html代码 jsx语法
         //写react语法 需要babel解析
         //react 只关注ui层
@@ -52,6 +74,7 @@
             这是父节点
             <p>
                 这是子节点
+                
             </p>    
         </div>;
         ReactDOM.render(
@@ -65,6 +88,7 @@
                 这是子节点
             </p>   
             <div>
+                
                 //js注释
                 {
                     //插值符号
@@ -76,7 +100,8 @@
                     */
                     //这是单行注释
                     
-                }    
+                }
+                
             </div> 
         </div>;
         
@@ -119,6 +144,8 @@
             document.getElementsByClassName('test')[1]
         )
     </script>
+
+    <!-- 插值符号 -->
     <script type="text/babel">
         //插值符号
         //{} ->数字 布尔 字符串 表达式 即时函数 数组
@@ -244,6 +271,7 @@
             document.getElementsByClassName('test2')[0]
         );
     </script>
+
     <!-- 事件绑定 -->
     <script type="text/babel">
         //事件绑定
@@ -292,6 +320,7 @@
         );
         
     </script>
+
     <!-- 组件 -->
     <script type="text/babel">
         //区分是否是组件  看是否有状态
@@ -428,11 +457,189 @@
         )
         
     </script>
+
     <!-- import -->
     <script type="module">
         import ab,{getData,title,arr,obj} from './es6.js'
 
         console.log(ab,getData,title,arr,obj)
     </script>
+
+    <script type="text/babel">
+        //for -> htmlFor
+        //focus -> autoFocus
+        const ele = (
+            <div>
+                1312
+                <input id={'txt'} type='text' autoFocus />  
+                <label htmlFor='txt'>132132</label>
+            </div>
+        )
+        ReactDOM.render(
+            ele,
+            document.getElementsByClassName('test4')[0]
+        )
+    </script>
+
+    <!-- 获取DOM节点 -->
+    <script type="text/babel">
+        class Ele extends React.Component{
+
+            handleClick(e) {
+                //通过 元素选择器获取DOM
+                const ipt = document.getElementsByTagName('input')
+                console.log(ipt)
+                //通过 事件对象获取DOM
+                const {target} = e
+                console.log(target)
+                //通过ref属性操作dom
+                console.log(this.refs.btn)
+                ReactDOM.findDOMNode(target).style.background="red"
+            }
+            render(){
+                return (
+                    <div>
+                        Dom
+                        <input 
+                            ref="btn"
+                            type="button"
+                            defaultValue="操作DOM"
+                            onClick={this.handleClick.bind(this)}
+                        />
+                    </div>
+                )
+            }
+        }
+        ReactDOM.render(
+            <Ele />,
+            document.getElementsByClassName('test5')[1]
+        )
+    </script>
+
+    <!-- refs -->
+    <script type="text/babel">
+        /*
+            虚拟DOM
+            只有当它插入文档以后，才会变成真实的DOM
+            可以从ref属性获取真实dom
+        */
+        class List extends React.Component{
+            render(){
+                return (
+                    <div>
+                        <p>list组件</p>
+                    </div>
+                )
+            }
+        }
+        /*
+            新版本react不推荐使用ref string 推荐使用 ref callback
+            ref callback -> this.属性名
+            被点击的input标签被挂载到了实例对象下
+        */
+        class Ele extends React.Component{
+            handleClick=()=>{
+                console.log(this)
+                const _div = this._div;
+                ReactDOM.findDOMNode(_div).style.background="blue"
+            }
+            render(){
+                return (
+                    <div>
+                        <input 
+                            ref = {item=>this._div = item}
+                            type="button"
+                            onClick={
+                                ()=>{
+                                    this.handleClick()
+                                    console.log(this)
+                                    //传入组件
+                                    /*
+                                        当把一个实例化对象传入ReactDOM.findDOMNode，
+                                        ReactDOM.findDOMNode会返回这个实例化对象中的render里的内容
+                                    */
+                                    console.log(ReactDOM.findDOMNode(this._list),this._list)
+                                    console.log(ReactDOM.findDOMNode(this._list) == this._list)
+                                    //false
+                                    //传入元素
+                                    /*
+                                        当把一个元素传入ReactDOM.findDOMNode，
+                                        ReactDOM.findDOMNode，会返回这个元素节点
+                                    */
+                                    console.log(ReactDOM.findDOMNode(this._div) == this._div)
+                                    //true
+                                }
+                            }
+                        />
+                        {
+                            //将组件的实例化对象挂载到当前的实例化对象上
+                        }
+                        <List 
+                            ref={item=>this._list=item}
+                        />
+                    </div>
+                )
+            }
+        }
+        ReactDOM.render(
+            <Ele />,
+            document.getElementsByClassName('test6')[0]
+        )
+    </script>
+
+    <!-- 组件与父子组件通讯 -->
+    <script type="text/babel">
+        class List extends React.Component{
+            // constructor(props){
+            //     super(props)
+            //     console.log(this.props.value)
+            // }
+            render(){
+                console.log(this.props)
+                return (
+                    <div>
+                        <p>list组件 子</p>
+                        {this.props.value}
+                        {
+                            //子组件调用父组件的方法
+                            //子组件向父组件传参
+                        }
+                        <input 
+                            type="button"
+                            onClick={this.props.fn.bind(this,'传参')}
+                        />
+                    </div>
+                )
+            }
+        }
+        class Ele extends React.Component{
+            state={
+                data:'父组件的数据'
+            }
+            getData(a){
+                console.log('父组件的getData函数',a)
+            }
+            render(){
+                return (
+                    <div>
+                        <p>ele组件 父</p>
+                        {
+                            //父组件向子组件传递信息
+                        }
+                        <List 
+                            value={this.state.data}
+                            fn={this.getData}
+                        />
+                    </div>
+                )
+            }
+        }
+        ReactDOM.render(
+            <Ele />,
+            document.getElementsByClassName('test7')[0]
+        )
+    </script>
+
+    
 </body>
 </html>

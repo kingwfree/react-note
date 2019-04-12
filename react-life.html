@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <div id="app"></div>
+    <script src="./node_modules/react/umd/react.development.js"></script>
+    <script src="./node_modules/babel-standalone/babel.js"></script>
+    <script src="./node_modules/react-dom/umd/react-dom.development.js"></script>
+    <!--生命周期-->
+    <script type="text/babel">
+        class List extends React.Component{
+            constructor(){
+                super(...arguments)
+                //console.log(this.props)
+                this.state={
+                    list:'这是list数据',
+                    data:this.props.data
+                }
+                console.log('2-1list构造函数')
+            }
+            componentWillReceiveProps(nextProps){
+                //钩子
+                console.log('2获取父组件更新的时候带过来的数据',nextProps)
+                this.setState({
+                    data:nextProps.data
+                })
+            }
+            componentWillMount(){
+                console.log('2-2list即将挂载')
+            }
+            componentDidMount(){
+                console.log('2-4list的挂载')
+            }
+            shouldComponentUpdate(nextProps,nextState){
+                //当前组件的数据nextState  父组件传递过来后更新的数据this.state
+                //默认return true
+                //true 是更新 执行render函数
+                //false 不更新 不执行render函数 但是state里的数据是有改变的
+                console.log('2shouldComponentUpdate',nextProps,nextState)
+                //因为this.setState是异步的，所以this.state.data拿到的不是当前的状态
+                console.log(this.state.data)
+                setTimeout(()=>{
+                    console.log(this.state.data)
+                },2000)
+                
+                return true
+            }
+            componentWillUpdate(nextProps,nextState){
+                //因为this.setState是异步的，所以this.state.data拿到的不是当前的状态
+                console.log(this.state.data)//这里拿到的状态和上面shouldComponentUpdate里拿到的一样
+                console.log('2组件即将被更新',nextProps,nextState)
+            }
+            componentDidUpdate(prevProps,prevState){
+                console.log(this.state.data)//这里的this.state已经是当前组件的状态了
+                //prevProps更新之前的父级传过来的状态  prevState更新之前的组件的状态
+                console.log('2组件更新完成',prevProps,prevState)
+            }
+            componentWillUnmount(){
+                console.log('list组件即将被销毁')
+            }
+            render(){
+                console.log('2-3list的渲染')
+                return (
+                    <div>
+                        {this.state.data}
+                        <h2>这是list组件</h2>
+                        
+                    </div>
+                )
+            }
+        }
+        class Ele extends React.Component{
+            constructor(){
+                super()
+                this.state={
+                    data:"Ele的数据",
+                    onOff:true
+                }
+                console.log('1-1-只执行一次构造函数')
+            }
+            handleClick=()=>{
+                this.setState({
+                    data:'改变了ele的数据'
+                })
+            }
+            componentWillMount(){
+                console.log('1-2-组件即将被挂载')
+                //console.log(this.refs) 这时无法进行dom操作
+                //请求后端资源 挂载到state里 真实的测试里会出现白屏现象
+                //this.setState  this.state this.props都是异步的
+                this.setState({
+                    data:'请求到的数据'
+                })
+                setTimeout(() => {
+                    console.log(this.state)
+                }, 2000);
+            }
+            componentDidMount(){
+                console.log('最后（父子组件全部渲染完成）-组件挂载完成')
+                //真实的情景下会在此请求数据
+
+            }
+            
+            destory=()=>{
+                this.setState({
+                    onOff:false
+                })
+            }
+            render(){
+                console.log('1-3-渲染数据')
+                return (
+                    <div onClick={this.handleClick}>
+                        <h1 ref={'h1'}>生命周期</h1>
+                        {
+                            this.state.onOff ? <List data={this.state.data}/>:''
+                        }
+                        <button onClick={this.destory} >销毁list</button>
+                    </div>
+                )
+            }
+        }
+        ReactDOM.render(
+            <Ele></Ele>,
+            document.querySelector("#app")
+        )
+    </script>
+
+</body>
+</html>
